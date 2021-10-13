@@ -54,12 +54,28 @@ void Interp::Run()
         }
         continue;
       }
+
       case Opcode::ADD: {
         auto rhs = PopInt();
         auto lhs = PopInt();
+
+        uint64_t sum = (uint64_t)rhs + (uint64_t)lhs;
+        
+        bool b_rhs = rhs >> 63;
+        bool b_lhs = lhs >> 63;
+        bool b_sum = sum >> 63;
+        
+        if(!b_rhs && !b_lhs && b_sum == 1){
+          throw RuntimeError("ADD operation overflow for positive values.");
+        }
+
+        if(b_rhs && b_lhs && b_sum == 0){
+          throw RuntimeError("ADD operation overflow for negative values.");
+        }
         Push(lhs + rhs);
         continue;
       }
+
       case Opcode::RET: {
         auto depth = prog_.Read<unsigned>(pc_);
         auto nargs = prog_.Read<unsigned>(pc_);
