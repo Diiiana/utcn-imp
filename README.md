@@ -24,14 +24,7 @@ make
 To run the interpreter, provide it with a path to an *Imp* source file:
 
 ```
-./imp ../examples/io.imp
-```
-
-Run the above command in the `Debug` directory and make sure to rebuild the
-executable after changing any of the sources by executing:
-
-```
-make
+./Debug/img examples/io.imp
 ```
 
 ### The Imp language

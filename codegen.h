@@ -128,6 +128,11 @@ private:
   /// Lowers a call expression.
   void LowerCallExpr(const Scope &scope, const CallExpr &expr);
 
+  /// Lowers a call expression.
+  void LowerIntExpr(const Scope &scope, const IntExpr &expr);
+
+  void EmitInt(int64_t t);
+
   /// Lowers a function declaration.
   void LowerFuncDecl(const Scope &scope, const FuncDecl &funcDecl);
 

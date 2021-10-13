@@ -57,10 +57,17 @@ public:
 public:
   /// Copy constructor.
   Token(const Token &that);
+  
   /// Default constructor, EOF token.
   Token() : kind_(Kind::END) {}
   /// Cleanup.
   ~Token();
+
+  
+  /// Returns INT
+  uint64_t GetInt() const { return value_.IntValue; }
+
+
 
   /// Returns the kind of the token.
   Kind GetKind() const { return kind_; }
@@ -106,6 +113,13 @@ public:
   static Token While(const Location &l) { return Token(l, Kind::WHILE); }
   static Token Ident(const Location &l, const std::string &str);
   static Token String(const Location &l, const std::string &str);
+
+
+  /// PROBLEM 2
+  static Token Int(const Location &l, const std::uint64_t &var);
+
+
+
 
   /// Print the token to a stream.
   void Print(std::ostream &os) const;

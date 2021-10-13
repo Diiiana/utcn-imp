@@ -19,6 +19,7 @@ enum class Opcode : uint8_t {
   PEEK,
   POP,
   CALL,
+  PUSH_INT,
 
   ADD,
   RET,

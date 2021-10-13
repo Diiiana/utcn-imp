@@ -44,6 +44,7 @@ public:
   enum class Kind {
     REF,
     BINARY,
+    INT,
     CALL,
   };
 
@@ -73,6 +74,19 @@ public:
 private:
   /// Name of the identifier.
   std::string name_;
+};
+
+/**
+ * Int expression.
+ */
+class IntExpr final: public Expr {
+public:
+  IntExpr(uint64_t value): Expr(Expr::Kind::INT), value_(value){}
+
+  uint64_t GetValue() const { return value_; }
+
+private:
+  uint64_t value_;
 };
 
 /**

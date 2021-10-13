@@ -1,0 +1,8 @@
+func print_int(a: int): int = "print_int"
+func read_int(): int = "read_int"
+
+func add_value(n: int): int {
+  return n + 100
+}
+
+print_int(add_value(read_int())
