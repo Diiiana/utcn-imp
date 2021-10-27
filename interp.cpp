@@ -76,6 +76,24 @@ void Interp::Run()
         continue;
       }
 
+      case Opcode::EQUALS: {
+        auto rhs = PopInt();
+        auto lhs = PopInt();
+
+        int64_t result = (rhs == lhs) ? 1 : 0;
+        Push(result);
+        continue;
+      }
+
+      case Opcode::MULTIPLY: {
+        auto rhs = PopInt();
+        auto lhs = PopInt();
+
+        int64_t multiplication = (uint64_t)rhs * (uint64_t)lhs;
+        Push(multiplication);
+        continue;
+      }
+
       case Opcode::RET: {
         auto depth = prog_.Read<unsigned>(pc_);
         auto nargs = prog_.Read<unsigned>(pc_);

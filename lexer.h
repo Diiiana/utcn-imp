@@ -47,6 +47,9 @@ public:
     EQUAL,
     COMMA,
     PLUS,
+    // ADDED
+    EQUALS,
+    MULTIPLY,
     // Complex tokens.
     INT,
     STRING,
@@ -118,8 +121,9 @@ public:
   /// PROBLEM 2
   static Token Int(const Location &l, const std::uint64_t &var);
 
-
-
+  // SET 2
+   static Token DoubleEqual(const Location &l) { return Token(l, Kind::EQUALS); }
+   static Token Multiply(const Location &l) { return Token(l, Kind::MULTIPLY); }
 
   /// Print the token to a stream.
   void Print(std::ostream &os) const;

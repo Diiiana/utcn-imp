@@ -181,15 +181,37 @@ std::shared_ptr<Expr> Parser::ParseCallExpr()
 // -----------------------------------------------------------------------------
 std::shared_ptr<Expr> Parser::ParseAddSubExpr()
 {
-  std::shared_ptr<Expr> term = ParseCallExpr();
+  std::shared_ptr<Expr> term = ParseMulDivRemExpr();
   while (Current().Is(Token::Kind::PLUS)) {
     lexer_.Next();
-    auto rhs = ParseCallExpr();
+    auto rhs = ParseMulDivRemExpr();
     term = std::make_shared<BinaryExpr>(BinaryExpr::Kind::ADD, term, rhs);
   }
   return term;
 }
 
+// -------------------------------------SET 2------------------------------------
+std::shared_ptr<Expr> Parser::ParseComparisonExpr()
+{
+  std::shared_ptr<Expr> term = ParseAddSubExpr();
+  while (Current().Is(Token::Kind::EQUALS)) {
+    lexer_.Next();
+    auto rhs = ParseAddSubExpr();
+    term = std::make_shared<BinaryExpr>(BinaryExpr::Kind::EQUALS, term, rhs);
+  }
+  return term;
+}
+
+std::shared_ptr<Expr> Parser::ParseMulDivRemExpr()
+{
+  std::shared_ptr<Expr> term = ParseCallExpr();
+  while (Current().Is(Token::Kind::MULTIPLY)) {
+    lexer_.Next();
+    auto rhs = ParseCallExpr();
+    term = std::make_shared<BinaryExpr>(BinaryExpr::Kind::MULTIPLY, term, rhs);
+  }
+  return term;
+}
 // -----------------------------------------------------------------------------
 const Token &Parser::Expect(Token::Kind kind)
 {

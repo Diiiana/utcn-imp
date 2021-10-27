@@ -41,13 +41,18 @@ private:
   std::shared_ptr<WhileStmt> ParseWhileStmt();
 
   /// Parse a single expression.
-  std::shared_ptr<Expr> ParseExpr() { return ParseAddSubExpr(); }
+  std::shared_ptr<Expr> ParseExpr() { return ParseComparisonExpr(); }
   /// Parse an expression which has no operators.
   std::shared_ptr<Expr> ParseTermExpr();
   /// Parse a call expression.
   std::shared_ptr<Expr> ParseCallExpr();
   /// Parse an add/sub expression.
   std::shared_ptr<Expr> ParseAddSubExpr();
+  //------------------------------------ SET 2 ----------------------
+  /// Parse an equals expression.
+  std::shared_ptr<Expr> ParseComparisonExpr();
+  /// Parse an multiply expression.
+  std::shared_ptr<Expr> ParseMulDivRemExpr();
 
   /// Helper to get the current token.
   inline const Token &Current() { return lexer_.GetToken(); }

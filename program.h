@@ -24,6 +24,10 @@ enum class Opcode : uint8_t {
   ADD,
   RET,
 
+  // ----------------- SET 2
+  EQUALS,
+  MULTIPLY,
+
   JUMP_FALSE,
   JUMP,
   STOP
