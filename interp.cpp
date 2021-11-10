@@ -77,11 +77,14 @@ void Interp::Run()
       }
 
       case Opcode::EQUALS: {
-        auto rhs = PopInt();
-        auto lhs = PopInt();
+        auto right = PopInt();
+        auto left = PopInt();
 
-        int64_t result = (rhs == lhs) ? 1 : 0;
-        Push(result);
+        int64_t equals = 0;
+        if(left == right) {
+          equals = !equals;
+        }
+        Push(equals);
         continue;
       }
 
