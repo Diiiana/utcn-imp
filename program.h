@@ -27,6 +27,9 @@ enum class Opcode : uint8_t {
   // ----------------- SET 2
   EQUALS,
   MULTIPLY,
+  DIVIDE,
+  SUBTRACT,
+  MODULO,
 
   JUMP_FALSE,
   JUMP,

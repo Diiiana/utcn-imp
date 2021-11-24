@@ -128,6 +128,9 @@ std::ostream &operator<<(std::ostream &os, const Token::Kind kind)
     case Token::Kind::FUNC: return os << "func";
     case Token::Kind::RETURN: return os << "return";
     case Token::Kind::WHILE: return os << "while";
+    case Token::Kind::IF: return os << "if";
+    case Token::Kind::ELSE: return os << "else";
+
     case Token::Kind::LPAREN: return os << "(";
     case Token::Kind::RPAREN: return os << ")";
     case Token::Kind::LBRACE: return os << "{";
@@ -143,6 +146,9 @@ std::ostream &operator<<(std::ostream &os, const Token::Kind kind)
     case Token::Kind::IDENT: return os << "IDENT";
     case Token::Kind::EQUALS: return os << "==";
     case Token::Kind::MULTIPLY: return os << "*";
+    case Token::Kind::DIVIDE: return os << "/";
+    case Token::Kind::MODULO: return os << "%";
+    case Token::Kind::SUBTRACT: return os << "-";
   }
   return os;
 }
@@ -206,9 +212,12 @@ const Token &Lexer::Next()
       return tk_ = Token::Equal(loc);
     }
     case '+': return NextChar(), tk_ = Token::Plus(loc);
+    case '-': return NextChar(), tk_ = Token::Subtract(loc);
     case ',': return NextChar(), tk_ = Token::Comma(loc);
     // set 2
     case '*': return NextChar(), tk_ = Token::Multiply(loc);
+    case '/': return NextChar(), tk_ = Token::Divide(loc);
+    case '%': return NextChar(), tk_ = Token::Modulo(loc);
     case '"': {
       std::string word;
       NextChar();
@@ -232,15 +241,18 @@ const Token &Lexer::Next()
         if (word == "func") return tk_ = Token::Func(loc);
         if (word == "return") return tk_ = Token::Return(loc);
         if (word == "while") return tk_ = Token::While(loc);
+
+        if (word == "if") return tk_ = Token::If(loc);
+        if (word == "else") return tk_ = Token::Else(loc);
         return tk_ = Token::Ident(loc, word);
       } else {
         if(isdigit(chr_)) {
-          uint64_t val = 0;
+          uint64_t numericalValue = 0;
           do {
-            val = val * 10  + (chr_ - '0');
+            numericalValue = numericalValue * 10  + (chr_ - '0');
             NextChar();
           } while (isdigit(chr_));
-          return tk_ = Token::Int(loc, val);
+          return tk_ = Token::Int(loc, numericalValue);
         }
       Error("unknown character '" + std::string(1, chr_) + "'");
     }

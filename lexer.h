@@ -7,11 +7,11 @@
 #include <iostream>
 #include <stdexcept>
 
-
 /**
  * Represents a location in a source file.
  */
-struct Location {
+struct Location
+{
   std::string_view Name;
   int Line;
   int Column;
@@ -30,13 +30,18 @@ inline std::ostream &operator<<(std::ostream &os, const Location &loc)
  * Tokens are identified through their kind.
  * Certain kinds, such as integers, carry an additional payload.
  */
-class Token final {
+class Token final
+{
 public:
-  enum class Kind {
+  enum class Kind
+  {
     // Keywords.
     FUNC,
     RETURN,
     WHILE,
+    IF,
+    ELSE,
+
     // Symbols.
     LPAREN,
     RPAREN,
@@ -50,6 +55,9 @@ public:
     // ADDED
     EQUALS,
     MULTIPLY,
+    SUBTRACT,
+    DIVIDE,
+    MODULO,
     // Complex tokens.
     INT,
     STRING,
@@ -60,17 +68,14 @@ public:
 public:
   /// Copy constructor.
   Token(const Token &that);
-  
+
   /// Default constructor, EOF token.
   Token() : kind_(Kind::END) {}
   /// Cleanup.
   ~Token();
 
-  
   /// Returns INT
   uint64_t GetInt() const { return value_.IntValue; }
-
-
 
   /// Returns the kind of the token.
   Kind GetKind() const { return kind_; }
@@ -114,16 +119,20 @@ public:
   static Token Func(const Location &l) { return Token(l, Kind::FUNC); }
   static Token Return(const Location &l) { return Token(l, Kind::RETURN); }
   static Token While(const Location &l) { return Token(l, Kind::WHILE); }
+  static Token If(const Location &l) { return Token(l, Kind::IF); }
+  static Token Else(const Location &l) { return Token(l, Kind::ELSE); }
   static Token Ident(const Location &l, const std::string &str);
   static Token String(const Location &l, const std::string &str);
-
 
   /// PROBLEM 2
   static Token Int(const Location &l, const std::uint64_t &var);
 
   // SET 2
-   static Token DoubleEqual(const Location &l) { return Token(l, Kind::EQUALS); }
-   static Token Multiply(const Location &l) { return Token(l, Kind::MULTIPLY); }
+  static Token DoubleEqual(const Location &l) { return Token(l, Kind::EQUALS); }
+  static Token Multiply(const Location &l) { return Token(l, Kind::MULTIPLY); }
+  static Token Subtract(const Location &l) { return Token(l, Kind::SUBTRACT); }
+  static Token Divide(const Location &l) { return Token(l, Kind::DIVIDE); }
+  static Token Modulo(const Location &l) { return Token(l, Kind::MODULO); }
 
   /// Print the token to a stream.
   void Print(std::ostream &os) const;
@@ -139,7 +148,8 @@ private:
   Kind kind_;
 
   /// Union of all payloads.
-  union {
+  union
+  {
     uint64_t IntValue;
     std::string *StringValue;
   } value_;
@@ -157,7 +167,8 @@ inline std::ostream &operator<<(std::ostream &os, const Token &tk)
 /**
  * Represents a lexer error.
  */
-class LexerError : public std::runtime_error {
+class LexerError : public std::runtime_error
+{
 public:
   LexerError(const Location &loc, const std::string &msg);
 };
@@ -165,7 +176,8 @@ public:
 /**
  * Splits a stream of characters into a stream of tokens.
  */
-class Lexer final {
+class Lexer final
+{
 public:
   /// Initialise the lexer, reading the file located at 'name'.
   Lexer(const std::string &name);
@@ -179,7 +191,7 @@ private:
   /// Advance the stream to the next character. Return '\0' on EOF.
   void NextChar();
   /// Return the location of the current token.
-  Location GetLocation() const { return { name_, lineNo_, charNo_ }; }
+  Location GetLocation() const { return {name_, lineNo_, charNo_}; }
   /// Report an error.
   [[noreturn]] void Error(const std::string &msg);
 

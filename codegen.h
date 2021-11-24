@@ -10,38 +10,42 @@
 #include "ast.h"
 #include "runtime.h"
 
-
-
 /**
  * Translator from the AST to bytecode.
  */
-class Codegen {
+class Codegen
+{
 public:
   /// Entry point to the code generator: translated an entire module.
   std::unique_ptr<Program> Translate(const Module &mod);
 
 private:
   /// Descriptor for a label.
-  struct Label {
+  struct Label
+  {
     explicit Label(unsigned id) : ID(id) {}
     bool operator==(const Label &that) const { return ID == that.ID; }
     unsigned ID;
   };
 
   /// Helper hash function for the label.
-  struct LabelHash {
-    size_t operator() (const Label &l) const { return l.ID; }
+  struct LabelHash
+  {
+    size_t operator()(const Label &l) const { return l.ID; }
   };
 
   /// Specifies the location and kind of the object a name is bound to.
-  struct Binding {
-    enum class Kind {
+  struct Binding
+  {
+    enum class Kind
+    {
       FUNC,
       PROTO,
       ARG,
     } Kind;
 
-    union {
+    union
+    {
       uint32_t Index;
       RuntimeFn Fn;
       Label Entry;
@@ -51,7 +55,8 @@ private:
   };
 
   /// Generic link in the scope chain, mapping identifiers to locations.
-  class Scope {
+  class Scope
+  {
   public:
     Scope(const Scope *parent) : parent_(parent) {}
 
@@ -64,14 +69,13 @@ private:
   };
 
   /// Scope for top-level globals.
-  class GlobalScope final : public Scope {
+  class GlobalScope final : public Scope
+  {
   public:
     GlobalScope(
         const std::map<std::string, Label> &funcs,
         const std::map<std::string, RuntimeFn> &protos)
-      : Scope(nullptr)
-      , funcs_(std::move(funcs))
-      , protos_(std::move(protos))
+        : Scope(nullptr), funcs_(std::move(funcs)), protos_(std::move(protos))
     {
     }
 
@@ -83,13 +87,13 @@ private:
   };
 
   /// Scope for the arguments of a function.
-  class FuncScope final : public Scope {
+  class FuncScope final : public Scope
+  {
   public:
     FuncScope(
         const Scope *parent,
         const std::map<std::string, uint32_t> &args)
-      : Scope(parent)
-      , args_(args)
+        : Scope(parent), args_(args)
     {
     }
 
@@ -100,7 +104,8 @@ private:
   };
 
   /// Scope for a block of statements.
-  class BlockScope final : public Scope {
+  class BlockScope final : public Scope
+  {
   public:
     BlockScope(const Scope *parent) : Scope(parent) {}
 
@@ -114,6 +119,12 @@ private:
   void LowerBlockStmt(const Scope &scope, const BlockStmt &blockStmt);
   /// Lowers a while statement.
   void LowerWhileStmt(const Scope &scope, const WhileStmt &whileStmt);
+
+  /// Lowers an if statement.
+  void LowerIfStmt(const Scope &scope, const IfStmt &ifStmt);
+  /// Lowers an else statement.
+  void LowerElseStmt(const Scope &scope, const ElseStmt &elseStmt);
+
   /// Lowers a return statement.
   void LowerReturnStmt(const Scope &scope, const ReturnStmt &returnStmt);
   /// Lowers a standalone expression statement.
@@ -154,11 +165,13 @@ private:
   void EmitReturn();
   /// Emit an add opcode.
   void EmitAdd();
-  
+
   // ------------------------SET 2
   void EmitEquals();
   void EmitMultiply();
-
+  void EmitDivide();
+  void EmitSubtract();
+  void EmitModulo();
 
   /// Emit a label.
   void EmitLabel(Label label);
@@ -168,7 +181,7 @@ private:
   void EmitJump(Label label);
 
   /// Emit some bytes of code.
-  template<typename T>
+  template <typename T>
   void Emit(const T &t);
   /// Emit an address or create a fixup for later.
   void EmitFixup(Label label);

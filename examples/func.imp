@@ -2,8 +2,8 @@
 func print_int(a: int): int = "print_int"
 func read_int(): int = "read_int"
 
-func exp(a: int, n: int): int {
-  return n == 0
+func exp(n: int, power: int): int {
+  return n+power*3
 }
 
 print_int(exp(read_int(), read_int()))
